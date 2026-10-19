@@ -1,0 +1,27 @@
+# Стенд: ESP32 DevKitC + PN532 V3 по SPI. Только чтение меток, лог в USB.
+esphome:
+  name: nfc-bench
+
+esp32:
+  board: esp32dev
+
+logger:
+
+spi:
+  clk_pin: GPIO18
+  miso_pin: GPIO19
+  mosi_pin: GPIO23
+
+pn532_spi:
+  cs_pin: GPIO5
+  update_interval: 500ms
+  on_tag:
+    then:
+      - logger.log:
+          format: "ПОСТАВИЛИ: %s"
+          args: ['x.c_str()']
+  on_tag_removed:
+    then:
+      - logger.log:
+          format: "СНЯЛИ: %s"
+          args: ['x.c_str()']

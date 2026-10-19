@@ -1,0 +1,120 @@
+blueprint:
+  name: Статуэтка → сценарий и подсветка
+  description: >-
+    Статуэтку поставили на подставку — загорается кольцо и выполняются действия.
+    Сняли — кольцо гаснет и выполняются действия «когда сняли».
+    Одна автоматизация на одну статуэтку.
+  domain: automation
+  source_url: https://github.com/rudnik275/nfc-figurines/blob/main/blueprints/figurine.yaml
+  homeassistant:
+    min_version: 2024.10.0
+  input:
+    figurine:
+      name: Статуэтка
+      description: Номер подписан на основании. Новую метку можно вписать по UID из «Настройки → Метки».
+      selector:
+        select:
+          custom_value: true
+          options:
+            - { label: Статуэтка 1, value: figurka-1 }
+            - { label: Статуэтка 2, value: figurka-2 }
+            - { label: Статуэтка 3, value: figurka-3 }
+            - { label: Статуэтка 4, value: figurka-4 }
+            - { label: Статуэтка 5, value: figurka-5 }
+            - { label: Статуэтка 6, value: figurka-6 }
+            - { label: Статуэтка 7, value: figurka-7 }
+            - { label: Статуэтка 8, value: figurka-8 }
+            - { label: Статуэтка 9, value: figurka-9 }
+            - { label: Статуэтка 10, value: figurka-10 }
+    ring:
+      name: Кольцо подсветки
+      selector:
+        entity:
+          filter:
+            - integration: esphome
+              domain: light
+    color:
+      name: Цвет
+      default: [255, 140, 0]
+      selector:
+        color_rgb: {}
+    effect:
+      name: Эффект
+      default: Ровно
+      selector:
+        select:
+          options: [Ровно, Пульс, Бегущий, Радуга]
+    seconds:
+      name: Сколько секунд светить
+      description: 0 — горит, пока статуэтка стоит.
+      default: 10
+      selector:
+        number:
+          min: 0
+          max: 3600
+          unit_of_measurement: с
+          mode: box
+    placed_actions:
+      name: Что сделать, когда поставили
+      default: []
+      selector:
+        action: {}
+    removed_actions:
+      name: Что сделать, когда сняли
+      default: []
+      selector:
+        action: {}
+
+# Снятие статуэтки перезапускает автоматизацию и обрывает таймер подсветки.
+mode: restart
+max_exceeded: silent
+
+variables:
+  ring: !input ring
+  color: !input color
+  effect: !input effect
+  seconds: !input seconds
+
+triggers:
+  - trigger: tag
+    tag_id: !input figurine
+    id: placed
+  - trigger: event
+    event_type: esphome.figurine_removed
+    event_data:
+      tag_id: !input figurine
+    id: removed
+
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: placed
+        sequence:
+          - action: light.turn_on
+            target:
+              entity_id: "{{ ring }}"
+            data:
+              rgb_color: "{{ color }}"
+              effect: "{{ 'None' if effect == 'Ровно' else effect }}"
+          - parallel:
+              - choose: []
+                default: !input placed_actions
+              - if:
+                  - condition: template
+                    value_template: "{{ seconds | int > 0 }}"
+                then:
+                  - delay:
+                      seconds: "{{ seconds | int }}"
+                  - action: light.turn_off
+                    target:
+                      entity_id: "{{ ring }}"
+      - conditions:
+          - condition: trigger
+            id: removed
+        sequence:
+          - action: light.turn_off
+            target:
+              entity_id: "{{ ring }}"
+          - choose: []
+            default: !input removed_actions

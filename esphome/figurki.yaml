@@ -1,0 +1,86 @@
+# Подставка для статуэток: метка NTAG215 в основании → событие в Home Assistant,
+# кольцо WS2812B на 19 пикселей — лампа в HA. Что запускает статуэтка, какой цвет
+# и сколько секунд горит — настраивается в HA блупринтом blueprints/figurine.yaml.
+esphome:
+  name: figurki
+  friendly_name: Статуэтки
+  project:
+    name: rudnik275.nfc-figurines
+    version: "0.1"
+  includes:
+    - figurki.h
+
+esp32:
+  board: esp32dev
+
+logger:
+
+api:
+  # Без этого устройство перезагружается каждые 15 минут, пока его не добавили в HA.
+  reboot_timeout: 0s
+
+ota:
+  - platform: esphome
+
+# Wi-Fi вводится с телефона: точка доступа «Figurki Setup» → страница выбора сети.
+wifi:
+  ap:
+    ssid: "Figurki Setup"
+
+captive_portal:
+
+# Владелец может забрать устройство в свой ESPHome Builder и обновлять сам.
+dashboard_import:
+  package_import_url: github://rudnik275/nfc-figurines/esphome/figurki.yaml@main
+  import_full_config: true
+
+spi:
+  clk_pin: GPIO18
+  miso_pin: GPIO19
+  mosi_pin: GPIO23
+
+pn532_spi:
+  cs_pin: GPIO5
+  update_interval: 500ms
+  on_tag:
+    then:
+      - homeassistant.tag_scanned: !lambda 'return figurine_id(x);'
+      - if:
+          condition:
+            not:
+              api.connected:
+          then:
+            - light.turn_on:
+                id: ring
+                red: 100%
+                green: 0%
+                blue: 0%
+                effect: "Нет связи"
+            - delay: 2s
+            - light.turn_off: ring
+  on_tag_removed:
+    then:
+      - homeassistant.event:
+          event: esphome.figurine_removed
+          data:
+            tag_id: !lambda 'return figurine_id(x);'
+
+light:
+  - platform: esp32_rmt_led_strip
+    id: ring
+    name: "Кольцо"
+    pin: GPIO16
+    num_leds: 19
+    chipset: WS2812
+    channel_colors: GRB
+    # Потолок яркости: кольцо берёт ≈ 0.6 А вместо 1.1 А, хватает USB-зарядки 2 А.
+    color_correct: [50%, 50%, 50%]
+    effects:
+      - pulse:
+          name: "Пульс"
+      - addressable_scan:
+          name: "Бегущий"
+      - addressable_rainbow:
+          name: "Радуга"
+      - strobe:
+          name: "Нет связи"
