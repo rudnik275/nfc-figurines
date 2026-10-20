@@ -41,7 +41,7 @@
 <body>
 <main>
   <h1>Подставка для статуэток — что к чему подключать</h1>
-  <p class="lead">ESP32 DevKitC + ридер PN532 + кольцо из 12 пикселей ленты через микросхему 74AHCT125.</p>
+  <p class="lead">ESP32 DevKitC + ридер PN532 + кольцо из 24 пикселей ленты через микросхему 74AHCT125.</p>
 
   <div class="card">
   <svg viewBox="0 0 1200 770" role="img" aria-label="Схема соединений">
@@ -160,14 +160,9 @@
     </g>
 
     <!-- Лента -->
-    <text x="170" y="560" text-anchor="middle" class="title">Лента, 12 пикселей</text>
+    <text x="170" y="560" text-anchor="middle" class="title">Лента, 24 пикселя</text>
     <rect x="50" y="572" width="250" height="96" rx="6" fill="#fff8e1" stroke="#f9ab00" stroke-width="2"/>
-    <g fill="#f9ab00">
-      <rect x="60" y="612" width="11" height="11"/><rect x="74" y="612" width="11" height="11"/><rect x="88" y="612" width="11" height="11"/>
-      <rect x="102" y="612" width="11" height="11"/><rect x="116" y="612" width="11" height="11"/><rect x="130" y="612" width="11" height="11"/>
-      <rect x="144" y="612" width="11" height="11"/><rect x="158" y="612" width="11" height="11"/><rect x="172" y="612" width="11" height="11"/>
-      <rect x="186" y="612" width="11" height="11"/><rect x="200" y="612" width="11" height="11"/><rect x="214" y="612" width="11" height="11"/>
-    </g>
+    <g fill="#f9ab00"><rect x="60" y="614" width="5" height="9"/><rect x="67" y="614" width="5" height="9"/><rect x="74" y="614" width="5" height="9"/><rect x="81" y="614" width="5" height="9"/><rect x="88" y="614" width="5" height="9"/><rect x="95" y="614" width="5" height="9"/><rect x="102" y="614" width="5" height="9"/><rect x="109" y="614" width="5" height="9"/><rect x="116" y="614" width="5" height="9"/><rect x="123" y="614" width="5" height="9"/><rect x="130" y="614" width="5" height="9"/><rect x="137" y="614" width="5" height="9"/><rect x="144" y="614" width="5" height="9"/><rect x="151" y="614" width="5" height="9"/><rect x="158" y="614" width="5" height="9"/><rect x="165" y="614" width="5" height="9"/><rect x="172" y="614" width="5" height="9"/><rect x="179" y="614" width="5" height="9"/><rect x="186" y="614" width="5" height="9"/><rect x="193" y="614" width="5" height="9"/><rect x="200" y="614" width="5" height="9"/><rect x="207" y="614" width="5" height="9"/><rect x="214" y="614" width="5" height="9"/><rect x="221" y="614" width="5" height="9"/></g>
     <text x="140" y="652" text-anchor="middle" class="small">← стрелки идут от проводов</text>
     <g class="pin" text-anchor="end">
       <text x="282" y="595">+5V</text><text x="282" y="625">Din</text><text x="282" y="655">GND</text>
@@ -218,6 +213,7 @@
       <li>у конденсатора <b>полоска (минус) — к GND</b>, иначе может вздуться;</li>
       <li>+5V и GND ленты <b>не перепутаны</b>: обратная полярность убивает ленту;</li>
       <li>VCC ридера остаётся на <b>3V3</b>, не на 5V.</li>
+      <li>На стенде питание идёт через USB ESP32. В готовом устройстве блок 2 А заводится через <b>отдельное гнездо USB-C</b> на шины + и −, а USB ESP32 — только для прошивки. <b>Оба сразу не подключать.</b></li>
     </ul>
   </div>
 
