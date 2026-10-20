@@ -1,4 +1,7 @@
-# Стенд: ESP32 DevKitC + PN532 V3 по SPI. Только чтение меток, лог в USB.
+# Стенд: ESP32 DevKitC + PN532 V3 по SPI, без Wi-Fi, лог в USB.
+# Метка → UID в лог и кольцо загорается цветом этой метки; сняли → гаснет.
+# Кнопка BOOT — полный белый (с потолком яркости) для проверки нагрева.
+# Без подключённой ленты всё про кольцо просто ничего не делает.
 esphome:
   name: nfc-bench
 
@@ -6,6 +9,11 @@ esp32:
   board: esp32dev
 
 logger:
+
+globals:
+  - id: tag_color
+    type: int
+    initial_value: '0'
 
 spi:
   clk_pin: GPIO18
@@ -20,8 +28,48 @@ pn532_spi:
       - logger.log:
           format: "ПОСТАВИЛИ: %s"
           args: ['x.c_str()']
+      - lambda: |-
+          uint32_t h = 0;
+          for (char c : x) h = h * 31 + c;
+          id(tag_color) = h % 6;
+      - light.turn_on:
+          id: ring
+          red: !lambda 'static const float c[6] = {1, 0, 0, 1, 0.6, 0}; return c[id(tag_color)];'
+          green: !lambda 'static const float c[6] = {0, 1, 0, 0.5, 0, 1}; return c[id(tag_color)];'
+          blue: !lambda 'static const float c[6] = {0, 0, 1, 0, 1, 1}; return c[id(tag_color)];'
   on_tag_removed:
     then:
       - logger.log:
           format: "СНЯЛИ: %s"
           args: ['x.c_str()']
+      - light.turn_off: ring
+
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO0
+      inverted: true
+      mode: INPUT_PULLUP
+    name: "BOOT"
+    on_press:
+      - if:
+          condition:
+            light.is_on: ring
+          then:
+            - light.turn_off: ring
+          else:
+            - light.turn_on:
+                id: ring
+                red: 100%
+                green: 100%
+                blue: 100%
+
+light:
+  - platform: esp32_rmt_led_strip
+    id: ring
+    name: "Кольцо"
+    pin: GPIO16
+    num_leds: 19
+    chipset: WS2812
+    channel_colors: GRB
+    color_correct: [50%, 50%, 50%]
