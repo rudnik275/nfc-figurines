@@ -14,6 +14,21 @@ globals:
   - id: tag_color
     type: int
     initial_value: '0'
+  - id: present_tag
+    type: std::string
+    initial_value: '""'
+
+# Снятой метка считается, только если её не видно 1.5 с подряд — как в figurki.yaml.
+script:
+  - id: confirm_removed
+    mode: restart
+    then:
+      - delay: 1500ms
+      - logger.log:
+          format: "СНЯЛИ: %s"
+          args: ['id(present_tag).c_str()']
+      - light.turn_off: ring
+      - lambda: 'id(present_tag) = "";'
 
 spi:
   clk_pin: GPIO18
@@ -25,24 +40,32 @@ pn532_spi:
   update_interval: 500ms
   on_tag:
     then:
-      - logger.log:
-          format: "ПОСТАВИЛИ: %s"
-          args: ['x.c_str()']
-      - lambda: |-
-          uint32_t h = 0;
-          for (char c : x) h = h * 31 + c;
-          id(tag_color) = h % 6;
-      - light.turn_on:
-          id: ring
-          red: !lambda 'static const float c[6] = {1, 0, 0, 1, 0.6, 0}; return c[id(tag_color)];'
-          green: !lambda 'static const float c[6] = {0, 1, 0, 0.5, 0, 1}; return c[id(tag_color)];'
-          blue: !lambda 'static const float c[6] = {0, 0, 1, 0, 1, 1}; return c[id(tag_color)];'
+      - if:
+          condition:
+            lambda: 'return x == id(present_tag);'
+          then:
+            - script.stop: confirm_removed
+            - logger.log:
+                format: "пропуск опроса, метка на месте: %s"
+                args: ['x.c_str()']
+          else:
+            - script.stop: confirm_removed
+            - lambda: |-
+                id(present_tag) = x;
+                uint32_t h = 0;
+                for (char c : x) h = h * 31 + c;
+                id(tag_color) = h % 6;
+            - logger.log:
+                format: "ПОСТАВИЛИ: %s"
+                args: ['x.c_str()']
+            - light.turn_on:
+                id: ring
+                red: !lambda 'static const float c[6] = {1, 0, 0, 1, 0.6, 0}; return c[id(tag_color)];'
+                green: !lambda 'static const float c[6] = {0, 1, 0, 0.5, 0, 1}; return c[id(tag_color)];'
+                blue: !lambda 'static const float c[6] = {0, 0, 1, 0, 1, 1}; return c[id(tag_color)];'
   on_tag_removed:
     then:
-      - logger.log:
-          format: "СНЯЛИ: %s"
-          args: ['x.c_str()']
-      - light.turn_off: ring
+      - script.execute: confirm_removed
 
 binary_sensor:
   - platform: gpio
