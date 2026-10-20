@@ -92,7 +92,7 @@ light:
     id: ring
     name: "Кольцо"
     pin: GPIO16
-    num_leds: 19
+    num_leds: 12
     chipset: WS2812
     channel_colors: GRB
     color_correct: [50%, 50%, 50%]
