@@ -193,6 +193,22 @@
       <circle cx="660" cy="738" r="12" fill="#fff" stroke="var(--gnd)" stroke-width="2"/><text x="660" y="742">18</text>
     </g>
 
+
+    <!-- Гнездо USB-C готового устройства -->
+    <rect x="860" y="628" width="150" height="112" rx="10" fill="#e6f4ea" stroke="#188038" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="935" y="652" text-anchor="middle" class="title">Гнездо USB-C</text>
+    <text x="935" y="669" text-anchor="middle" class="small">в корпусе, от блока 2 А</text>
+    <g class="pin"><text x="996" y="697" text-anchor="end">V</text><text x="996" y="727" text-anchor="end">G</text></g>
+    <g fill="#5f6368"><circle cx="1010" cy="692" r="5"/><circle cx="1010" cy="722" r="5"/></g>
+    <line x1="1015" y1="692" x2="1036" y2="692" stroke="var(--v5)" stroke-width="3.5"/>
+    <rect x="1036" y="682" width="52" height="21" rx="4" fill="var(--v5)"/><text x="1062" y="697" text-anchor="middle" class="tag">+5V</text>
+    <line x1="1015" y1="722" x2="1036" y2="722" stroke="var(--gnd)" stroke-width="3.5"/>
+    <rect x="1036" y="712" width="52" height="21" rx="4" fill="var(--gnd)"/><text x="1062" y="727" text-anchor="middle" class="tag">GND</text>
+    <g class="badge" text-anchor="middle">
+      <circle cx="1106" cy="692" r="12" fill="#fff" stroke="var(--v5)" stroke-width="2"/><text x="1106" y="696">19</text>
+      <circle cx="1106" cy="722" r="12" fill="#fff" stroke="var(--gnd)" stroke-width="2"/><text x="1106" y="726">20</text>
+    </g>
+    <text x="935" y="760" text-anchor="middle" class="small">на стенде не нужно</text>
     <!-- Легенда -->
     <rect x="830" y="410" width="330" height="190" rx="10" fill="#fff" stroke="#dadce0"/>
     <text x="850" y="440" class="title">Как читать метки</text>
@@ -213,7 +229,7 @@
       <li>у конденсатора <b>полоска (минус) — к GND</b>, иначе может вздуться;</li>
       <li>+5V и GND ленты <b>не перепутаны</b>: обратная полярность убивает ленту;</li>
       <li>VCC ридера остаётся на <b>3V3</b>, не на 5V.</li>
-      <li>На стенде питание идёт через USB ESP32. В готовом устройстве блок 2 А заводится через <b>отдельное гнездо USB-C</b> на шины + и −, а USB ESP32 — только для прошивки. <b>Оба сразу не подключать.</b></li>
+      <li>На стенде питание идёт через USB ESP32. В готовом устройстве блок 2 А заводится через <b>гнездо USB-C</b> (провода 19–20) на шины + и −, провод 7 (ESP32 5V → шина +) остаётся, а USB ESP32 — только для прошивки. <b>Оба USB сразу не подключать.</b></li>
     </ul>
   </div>
 
@@ -283,6 +299,9 @@
       <tr><td class="c"><input type="checkbox"></td><td class="n">16</td><td><span class="dot" style="background:var(--gnd)"></span>лента GND</td><td>шина −</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">17</td><td><span class="dot" style="background:var(--v5)"></span>конденсатор, длинная нога</td><td>шина +</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">18</td><td><span class="dot" style="background:var(--gnd)"></span>конденсатор, нога со стороны полоски</td><td>шина −</td></tr>
+      <tr class="group"><td colspan="4">Готовое устройство — питание от блока 2 А (на стенде не нужно)</td></tr>
+      <tr><td class="c"><input type="checkbox"></td><td class="n">19</td><td><span class="dot" style="background:var(--v5)"></span>гнездо USB-C, площадка V</td><td>шина +</td></tr>
+      <tr><td class="c"><input type="checkbox"></td><td class="n">20</td><td><span class="dot" style="background:var(--gnd)"></span>гнездо USB-C, площадка G</td><td>шина −</td></tr>
       <tr class="group"><td colspan="4">Можно не подключать — заработает и так</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">—</td><td>микросхема, выводы 4, 10, 13</td><td>шина +</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">—</td><td>микросхема, выводы 5, 9, 12</td><td>шина −</td></tr>
