@@ -15,8 +15,9 @@ d.rectangle([M - S // 2, MT - S // 2, M + (pb.COLS - 1) * S + S // 2, MT + (pb.R
 for x in range(pb.COLS):
     for y in range(pb.ROWS):
         X, Y = c((x, y)); d.ellipse([X - 6, Y - 6, X + 6, Y + 6], fill="#da8a67"); d.ellipse([X - 2, Y - 2, X + 2, Y + 2], fill="#1f6b3a")
-for x in range(pb.COLS): d.text((c((x, 0))[0] - 4, MT - S), str(x), fill="black", font=f)
-for y in range(pb.ROWS): d.text((M - S - 4, c((0, y))[1] - 7), str(y), fill="black", font=f)
+# Нумерация как в DIY Layout Creator: столбцы 1..24, ряды A..J.
+for x in range(pb.COLS): d.text((c((x, 0))[0] - 5, MT - S), str(x + 1), fill="black", font=f)
+for y in range(pb.ROWS): d.text((M - S - 4, c((0, y))[1] - 7), "ABCDEFGHIJ"[y], fill="black", font=f)
 def col(run):
     hs = set(run)
     if any(h[1] == 0 for h in hs) and all(h[1] <= 3 for h in hs) and not any(h in ((7,3),) for h in hs): return "#d93025"

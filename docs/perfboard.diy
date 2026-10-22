@@ -17,11 +17,11 @@
       <alpha>127</alpha>
       <value></value>
       <controlPoints>
-        <point x="0.5" y="1.0"/>
-        <point x="2.8" y="1.9"/>
+        <point x="0.4" y="0.9"/>
+        <point x="2.9" y="2.0"/>
       </controlPoints>
-      <firstPoint x="0.5" y="1.0"/>
-      <secondPoint x="2.8" y="1.9"/>
+      <firstPoint x="0.4" y="0.9"/>
+      <secondPoint x="2.9" y="2.0"/>
       <boardColor hex="1f6b3a"/>
       <borderColor hex="ada47d"/>
       <coordinateColor hex="b6b6b6"/>
