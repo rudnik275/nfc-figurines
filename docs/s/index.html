@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Подставка — настройка</title>
+<style>
+  :root { --bg: #f6f5f2; --card: #ffffff; --text: #1f1f1f; --dim: #6b6b6b; --line: #e4e2dc; --accent: #18bcf2; --accent-text: #ffffff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #141414; --card: #1e1e1e; --text: #ececec; --dim: #9a9a9a; --line: #2c2c2c; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 560px; margin: 0 auto; padding: 28px 16px 48px; }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0 0 6px; }
+  .lead { color: var(--dim); margin: 0 0 22px; }
+  ol { list-style: none; padding: 0; margin: 0; counter-reset: step; }
+  li.step { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 16px 16px 58px; margin-bottom: 12px; position: relative; counter-increment: step; }
+  li.step::before { content: counter(step); position: absolute; left: 16px; top: 15px; width: 28px; height: 28px; border-radius: 50%; background: var(--text); color: var(--bg); font-weight: 700; display: grid; place-items: center; font-size: 15px; }
+  li.step h2 { font-size: 18px; margin: 0 0 6px; }
+  li.step p { margin: 6px 0 0; }
+  .muted { color: var(--dim); font-size: 15px; }
+  .btn { display: inline-block; margin-top: 10px; background: var(--accent); color: var(--accent-text); text-decoration: none; font-weight: 700; padding: 12px 16px; border-radius: 10px; }
+  code { background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; font-size: 15px; }
+  .legend { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-top: 22px; }
+  .legend h2 { font-size: 18px; margin: 0 0 10px; }
+  .row { display: flex; gap: 12px; align-items: center; margin: 8px 0; }
+  .dot { flex: none; width: 18px; height: 18px; border-radius: 50%; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Подставка для статуэток</h1>
+  <p class="lead">Настройка один раз, минут на десять. Понадобятся телефон и Home Assistant.</p>
+
+  <ol>
+    <li class="step">
+      <h2>Включи подставку</h2>
+      <p>В розетку, через блок питания USB-C. Кольцо начнёт медленно дышать <b>синим</b> — подставка ждёт Wi-Fi.</p>
+    </li>
+    <li class="step">
+      <h2>Подключи её к своему Wi-Fi</h2>
+      <p>Отсканируй камерой QR <b>«1 · Wi-Fi»</b> на наклейке. Телефон подключится к сети <code>Figurki Setup</code> и откроет страницу настройки. Выбери свою сеть, введи пароль, нажми <b>Save</b>.</p>
+      <p class="muted">Страница не открылась сама — открой в браузере <code>192.168.4.1</code>.</p>
+      <p>Синее дыхание сменится <b>янтарным</b>: Wi-Fi есть, ждём Home Assistant.</p>
+    </li>
+    <li class="step">
+      <h2>Добавь подставку в Home Assistant</h2>
+      <p><b>Настройки → Устройства и службы</b> — там появится «Обнаружено: Статуэтки». Нажми <b>Настроить</b> и вставь <b>ключ шифрования</b> — его тебе передали вместе с подставкой.</p>
+      <p class="muted">Не появилась — <b>Добавить интеграцию → ESPHome</b>, адрес <code>figurki.local</code>.</p>
+      <p>Янтарное дыхание пропадёт — подставка на связи.</p>
+    </li>
+    <li class="step">
+      <h2>Установи блупринт</h2>
+      <p>Это форма, в которой каждой статуэтке задаются цвет и сценарий.</p>
+      <a class="btn" href="https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frudnik275%2Fnfc-figurines%2Fblob%2Fmain%2Fblueprints%2Ffigurine.yaml">Добавить блупринт в Home Assistant</a>
+    </li>
+    <li class="step">
+      <h2>Настрой статуэтки</h2>
+      <p><b>Настройки → Автоматизации → Создать автоматизацию</b> → блупринт <b>«Статуэтка → цвет и сценарий»</b>. Выбери статуэтку (номер на основании), цвет кольца, сколько секунд ему гореть, что сделать, когда статуэтку поставили и когда сняли. Сохрани.</p>
+      <p>Одна автоматизация — одна статуэтка. Менять можно в любой момент, подставку трогать не нужно.</p>
+    </li>
+    <li class="step">
+      <h2>Новая метка</h2>
+      <p>Подойдёт любая метка NTAG215. Поставь её на подставку — в <b>Настройки → Метки</b> появится новая запись. Скопируй её ID и впиши в поле «Статуэтка» вместо номера из списка.</p>
+    </li>
+  </ol>
+
+  <section class="legend">
+    <h2>Что показывает кольцо</h2>
+    <div class="row"><span class="dot" style="background:#3b6cff"></span><span>Медленно дышит синим — нет Wi-Fi, шаг 2.</span></div>
+    <div class="row"><span class="dot" style="background:#ff9a1a"></span><span>Дышит янтарным — нет связи с Home Assistant, шаг 3. Подсказка видна первые 15 минут после включения.</span></div>
+    <div class="row"><span class="dot" style="background:#f4f4f4; border:1px solid #bbb"></span><span>Загорелось белым — для этой метки ещё нет автоматизации, шаг 5.</span></div>
+  </section>
+</main>
+</body>
+</html>

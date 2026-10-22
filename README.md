@@ -1,14 +1,18 @@
 # nfc-figurines
 
 Подставка для статуэток под Home Assistant. В основании каждой статуэтки — метка NFC.
-Статуэтку ставят на подставку — HA запускает назначенный ей сценарий и зажигает кольцо
-подсветки её цветом. Что делает каждая статуэтка, каким цветом и сколько секунд светит,
-владелец настраивает сам в приложении Home Assistant.
+Статуэтку подносят — кольцо заполняется с двух сторон по мере того, как ридер всё
+увереннее видит метку; поставили — кольцо «вдыхает», горит её цветом и плавно гаснет,
+а HA запускает её сценарий. Цвет, время свечения и сценарий каждой статуэтки владелец
+настраивает сам в приложении Home Assistant.
 
 - `esphome/figurki.yaml` — прошивка устройства.
+- `esphome/ring_engine.h` — анимация кольца, чистый C++; тесты — `tests/ring_engine_test.cpp`.
 - `esphome/figurki.h` — соответствие UID метки → номер статуэтки.
 - `esphome/nfc-bench.yaml` — стенд: только чтение меток, UID в лог по USB.
-- `blueprints/figurine.yaml` — блупринт HA «Статуэтка → сценарий и подсветка».
+- `blueprints/figurine.yaml` — блупринт HA «Статуэтка → цвет и сценарий».
+- `docs/s/index.html` — страница настройки для владельца (QR №2), GitHub Pages.
+- `docs/stickers/sticker-50x30.png` — наклейка на корпус для Niimbot B1, `tools/make-sticker.py`.
 
 ## Детали
 
@@ -109,29 +113,45 @@ cd esphome && uvx --python 3.12 esphome run nfc-bench.yaml
 
 ## Прошивка устройства
 
+Ключ шифрования лежит в приватном `rudnik275/nfc-figurines-private` и подключается симлинком:
+
+```
+ln -s ../../nfc-figurines-private/secrets.yaml esphome/secrets.yaml
+```
+
+От блока 2 А через гнездо USB-C (потолок яркости 80 %):
+
 ```
 cd esphome && uvx --python 3.12 esphome run figurki.yaml
 ```
 
+На стенде от USB компьютера — с потолком 25 %:
+
+```
+cd esphome && uvx --python 3.12 esphome -s ring_max 25% run figurki.yaml
+```
+
+Тесты анимации (на macOS clang не находит libc++ сам — путь к SDK указан явно):
+
+```
+SDK=$(xcrun --show-sdk-path); clang++ -std=c++17 -isysroot "$SDK" -nostdinc++ -isystem "$SDK/usr/include/c++/v1" -I esphome tests/ring_engine_test.cpp -o /tmp/rt && /tmp/rt
+```
+
+Настройки анимации — поля в начале `RingEngine` (`ring_engine.h`): скорость заполнения,
+глубина вдоха, время затухания, `start` — пиксель, от которого расходятся волны.
+
 ## Для владельца
 
-1. Включить подставку. С телефона подключиться к Wi-Fi **Figurki Setup**, на открывшейся
-   странице выбрать свою сеть и ввести пароль.
-2. Home Assistant сам покажет «Обнаружено: Статуэтки» — **Добавить**.
-3. Импортировать блупринт:
-   [![Импорт блупринта](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frudnik275%2Fnfc-figurines%2Fblob%2Fmain%2Fblueprints%2Ffigurine.yaml)
-4. **Настройки → Автоматизации → Создать → из блупринта «Статуэтка → сценарий и
-   подсветка»** — по одной автоматизации на статуэтку: статуэтка, кольцо, цвет, эффект,
-   сколько секунд светить (0 — пока стоит), что сделать, когда поставили и когда сняли.
+Пошагово — на странице настройки: https://rudnik275.github.io/nfc-figurines/s/ (QR №2 на
+наклейке). Коротко: Wi-Fi через QR №1 → «Обнаружено: Статуэтки» в HA, ключ шифрования →
+блупринт → по автоматизации на статуэтку.
 
-Если кольцо мигнуло красным — подставка не связана с Home Assistant (Wi-Fi или HA
-недоступны), метка при этом прочитана.
+Импорт блупринта:
+[![Импорт блупринта](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Frudnik275%2Fnfc-figurines%2Fblob%2Fmain%2Fblueprints%2Ffigurine.yaml)
 
-Свои метки NTAG215 тоже работают: первая же поставленная появится в **Настройки →
-Метки** со своим UID, его можно вписать в поле «Статуэтка».
+Кольцо на пустой платформе: дышит синим — нет Wi-Fi; янтарным — нет связи с HA (первые
+15 минут после включения); метка загорелась белым — для неё нет автоматизации.
 
 ## Не сделано
 
-- Ключ шифрования API — при финальной прошивке, через 1Password, в репозиторий не попадает.
-- Корпус: ридер отдельно от платы ESP32 и не на металле, метка статуэтки над
-  половиной PN532 с антенной.
+- Блупринт и связка с HA не проверены на живом Home Assistant.

@@ -1,14 +1,32 @@
 # Подставка для статуэток: метка NTAG215 в основании → событие в Home Assistant,
-# кольцо WS2812B на 24 пикселя — лампа в HA. Что запускает статуэтка, какой цвет
-# и сколько секунд горит — настраивается в HA блупринтом blueprints/figurine.yaml.
+# кольцо WS2812B на 24 пикселя играет анимацию (ring_engine.h): заполняется с двух
+# сторон, пока метку подносят, «вдыхает», горит и гаснет. Цвет, время свечения и
+# сценарий каждой статуэтки задаются в HA блупринтом blueprints/figurine.yaml.
+#
+# Ключ шифрования — !secret api_key из secrets.yaml (приватный репозиторий
+# rudnik275/nfc-figurines-private, сюда кладётся симлинком).
+
+substitutions:
+  # 80 % — от блока 5 В / 2 А через отдельное гнездо USB-C.
+  # На стенде от USB компьютера собирать с `esphome -s ring_max 25% ...`.
+  ring_max: 80%
+
 esphome:
   name: figurki
   friendly_name: Статуэтки
   project:
     name: rudnik275.nfc-figurines
-    version: "0.1"
+    version: "0.2"
   includes:
     - figurki.h
+    - ring_engine.h
+  on_boot:
+    priority: -100
+    then:
+      - light.turn_on:
+          id: ring
+          brightness: 100%
+          effect: "Кольцо"
 
 esp32:
   board: esp32dev
@@ -16,8 +34,20 @@ esp32:
 logger:
 
 api:
+  encryption:
+    key: !secret api_key
   # Без этого устройство перезагружается каждые 15 минут, пока его не добавили в HA.
   reboot_timeout: 0s
+  actions:
+    # Вызывает блупринт: esphome.figurki_show_color.
+    - action: show_color
+      variables:
+        red: int
+        green: int
+        blue: int
+        hold: float
+      then:
+        - lambda: 'ring_engine().set_color(red, green, blue, hold);'
 
 ota:
   - platform: esphome
@@ -29,20 +59,24 @@ wifi:
 
 captive_portal:
 
-# Владелец может забрать устройство в свой ESPHome Builder и обновлять сам.
-dashboard_import:
-  package_import_url: github://rudnik275/nfc-figurines/esphome/figurki.yaml@main
-  import_full_config: true
-
 spi:
   clk_pin: GPIO18
   miso_pin: GPIO19
   mosi_pin: GPIO23
 
-# Ридер изредка пропускает один опрос и при этом объявляет метку снятой.
-# Снятой статуэтка считается, только если её не видно 1.5 с подряд.
 globals:
+  # Что видит ридер прямо сейчас, без сглаживания: для анимации кольца.
+  - id: raw_present
+    type: bool
+    initial_value: 'false'
+  # Ридер изредка пропускает один опрос и при этом объявляет метку снятой.
+  # Для Home Assistant статуэтка снята, только если её не видно 1.5 с подряд.
   - id: present_tag
+    type: std::string
+    initial_value: '""'
+  # Номер статуэтки для HA (figurka-N или UID). Поля событий читают его отсюда: лямбды
+  # в полях data ESPHome кладёт в main.cpp раньше includes, figurine_id() там не виден.
+  - id: present_figurine
     type: std::string
     initial_value: '""'
 
@@ -51,17 +85,24 @@ script:
     mode: restart
     then:
       - delay: 1500ms
+      - logger.log:
+          format: "СНЯЛИ: %s"
+          args: ['id(present_tag).c_str()']
       - homeassistant.event:
           event: esphome.figurine_removed
           data:
-            tag_id: !lambda 'return figurine_id(id(present_tag));'
-      - lambda: 'id(present_tag) = "";'
+            tag_id: !lambda 'return id(present_figurine);'
+      - lambda: |-
+          id(present_tag) = "";
+          id(present_figurine) = "";
 
 pn532_spi:
   cs_pin: GPIO5
-  update_interval: 500ms
+  # Чаще опрос — точнее «сигнал» для анимации.
+  update_interval: 200ms
   on_tag:
     then:
+      - lambda: 'id(raw_present) = true;'
       - if:
           condition:
             lambda: 'return x == id(present_tag);'
@@ -78,43 +119,48 @@ pn532_spi:
                   - homeassistant.event:
                       event: esphome.figurine_removed
                       data:
-                        tag_id: !lambda 'return figurine_id(id(present_tag));'
-            - lambda: 'id(present_tag) = x;'
-            - homeassistant.tag_scanned: !lambda 'return figurine_id(x);'
-            - if:
-                condition:
-                  not:
-                    api.connected:
-                then:
-                  - light.turn_on:
-                      id: ring
-                      red: 100%
-                      green: 0%
-                      blue: 0%
-                      effect: "Нет связи"
-                  - delay: 2s
-                  - light.turn_off: ring
+                        tag_id: !lambda 'return id(present_figurine);'
+            - lambda: |-
+                id(present_tag) = x;
+                id(present_figurine) = figurine_id(x);
+                ring_engine().new_tag();
+            - logger.log:
+                format: "ПОСТАВИЛИ: %s"
+                args: ['x.c_str()']
+            - homeassistant.tag_scanned: !lambda 'return id(present_figurine);'
   on_tag_removed:
     then:
+      - lambda: 'id(raw_present) = false;'
       - script.execute: confirm_removed
 
 light:
   - platform: esp32_rmt_led_strip
     id: ring
-    name: "Кольцо"
+    # Кольцом управляет только анимация на устройстве, в HA его не видно.
+    internal: true
+    restore_mode: ALWAYS_ON
+    default_transition_length: 0s
     pin: GPIO16
     num_leds: 24
     chipset: WS2812
     channel_colors: GRB
-    # Потолок яркости 80 %: кольцо на полном белом ≈ 1.15 А, всё устройство ≈ 1.65 А
-    # от блока 5 В / 2 А. Питание — через отдельное гнездо USB-C, не через разъём ESP32.
-    color_correct: [80%, 80%, 80%]
+    # Потолок яркости: на 80 % кольцо на полном белом ≈ 1.15 А, всё устройство ≈ 1.65 А.
+    color_correct: [$ring_max, $ring_max, $ring_max]
     effects:
-      - pulse:
-          name: "Пульс"
-      - addressable_scan:
-          name: "Бегущий"
-      - addressable_rainbow:
-          name: "Радуга"
-      - strobe:
-          name: "Нет связи"
+      - addressable_lambda:
+          name: "Кольцо"
+          update_interval: 16ms
+          lambda: |-
+            auto status = RingEngine::Status::kOk;
+            if (!wifi::global_wifi_component->is_connected()) {
+              status = RingEngine::Status::kWifiSetup;
+            } else if (!api::global_api_server->is_connected() && millis() < 15 * 60 * 1000) {
+              // Первые 15 минут после включения подсказываем, что HA ещё не подключён.
+              status = RingEngine::Status::kNoHa;
+            }
+            auto &e = ring_engine();
+            e.tick(millis(), id(raw_present), status);
+            for (int i = 0; i < it.size(); i++) {
+              RingRgb p = e.pixel(i);
+              it[i] = Color(uint8_t(p.r * 255), uint8_t(p.g * 255), uint8_t(p.b * 255));
+            }
