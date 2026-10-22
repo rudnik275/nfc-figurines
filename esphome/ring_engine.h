@@ -188,6 +188,49 @@ class RingEngine {
   RingRgb color_{1, 1, 1}, target_{1, 1, 1};
 };
 
+// ── Питание ────────────────────────────────────────────────────────────────
+// Зарядник USB-C сообщает, сколько готов отдать на 5 В, напряжением на линии CC
+// (на резисторе 5.1 кОм в гнезде): до 0.66 В — USB по умолчанию, до 1.23 В — 1.5 А,
+// выше — 3 А. Кабель USB-A → C всегда показывает «по умолчанию». Работает одна
+// линия CC — та, что соединена кабелем; на второй около 0 В.
+// Возвращает мА, 0 — неизвестно (гнездо не подключено, CC не подпаяны, помеха).
+inline int usb_c_source_ma(float cc1, float cc2) {
+  float lo = std::min(cc1, cc2), hi = std::max(cc1, cc2);
+  if (lo > 0.2f || hi < 0.2f || hi > 2.2f) return 0;
+  if (hi < 0.66f) return 500;
+  if (hi < 1.23f) return 1500;
+  return 3000;
+}
+
+// Сколько можно отдать кольцу: мощность зарядника с запасом 15 % минус ~0.5 А
+// на ESP32 и ридер. Неизвестный или слабый источник — минимум, кольцо тусклое.
+inline float ring_budget_ma(int source_ma) {
+  constexpr float kSystemMa = 500, kMargin = 0.85f, kFloorMa = 150;
+  if (source_ma <= 0) return kFloorMa;
+  return std::max(kFloorMa, source_ma * kMargin - kSystemMa);
+}
+
+// Приглушает кадр, если оценка тока кольца выше бюджета. Значения 0..1 — до гаммы:
+// ESPHome применяет гамму 2.8 уже после, поэтому ток канала ∝ значение^2.8.
+// ch_ma — ток одного канала WS2812B на полной яркости (номинал ~20 мА).
+// Возвращает множитель, на который приглушили (1 — не трогали).
+inline float limit_power(RingRgb *px, int n, float budget_ma, float ch_ma = 20.0f, float gamma = 2.8f) {
+  float est = 0;
+  for (int i = 0; i < n; i++)
+    est += (std::pow(px[i].r, gamma) + std::pow(px[i].g, gamma) + std::pow(px[i].b, gamma)) * ch_ma;
+  if (est <= budget_ma || est <= 0) return 1.0f;
+  float k = std::pow(budget_ma / est, 1.0f / gamma);
+  for (int i = 0; i < n; i++) px[i] = {px[i].r * k, px[i].g * k, px[i].b * k};
+  return k;
+}
+
+inline float ring_current_ma(const RingRgb *px, int n, float ch_ma = 20.0f, float gamma = 2.8f) {
+  float est = 0;
+  for (int i = 0; i < n; i++)
+    est += (std::pow(px[i].r, gamma) + std::pow(px[i].g, gamma) + std::pow(px[i].b, gamma)) * ch_ma;
+  return est;
+}
+
 inline RingEngine &ring_engine() {
   static RingEngine engine;
   return engine;

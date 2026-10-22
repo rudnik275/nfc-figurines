@@ -44,7 +44,7 @@
   <p class="lead">ESP32 DevKitC + ридер PN532 + кольцо из 24 пикселей ленты через микросхему 74AHCT125.</p>
 
   <div class="card">
-  <svg viewBox="0 0 1200 770" role="img" aria-label="Схема соединений">
+  <svg viewBox="0 0 1200 810" role="img" aria-label="Схема соединений">
     <!-- ESP32 -->
     <rect x="40" y="40" width="230" height="470" rx="10" fill="#e8eaed" stroke="#5f6368" stroke-width="2"/>
     <text x="155" y="70" text-anchor="middle" class="title">ESP32 DevKitC</text>
@@ -56,6 +56,8 @@
       <text x="258" y="235" text-anchor="end">GPIO23</text>
       <text x="258" y="275" text-anchor="end">GPIO5</text>
       <text x="258" y="315" text-anchor="end">GND</text>
+      <text x="258" y="340" text-anchor="end">GPIO34</text>
+      <text x="258" y="362" text-anchor="end">GPIO35</text>
       <text x="258" y="385" text-anchor="end">GPIO16 (RX2)</text>
       <text x="258" y="435" text-anchor="end">5V</text>
       <text x="258" y="475" text-anchor="end">GND (любой свободный)</text>
@@ -63,6 +65,7 @@
     <g fill="#5f6368">
       <circle cx="270" cy="110" r="5"/><circle cx="270" cy="150" r="5"/><circle cx="270" cy="190" r="5"/>
       <circle cx="270" cy="230" r="5"/><circle cx="270" cy="270" r="5"/><circle cx="270" cy="310" r="5"/>
+      <circle cx="270" cy="335" r="5"/><circle cx="270" cy="357" r="5"/>
       <circle cx="270" cy="380" r="5"/><circle cx="270" cy="430" r="5"/><circle cx="270" cy="470" r="5"/>
     </g>
 
@@ -98,6 +101,18 @@
       <circle cx="575" cy="310" r="12" fill="#fff" stroke="var(--gnd)" stroke-width="2"/><text x="575" y="314">6</text>
     </g>
 
+
+    <!-- ESP32 GPIO34/35 → линии CC гнезда USB-C -->
+    <g>
+      <line x1="275" y1="335" x2="300" y2="335" stroke="#8d6e63" stroke-width="3"/>
+      <rect x="300" y="326" width="44" height="18" rx="4" fill="#8d6e63"/><text x="322" y="339" text-anchor="middle" class="tag">CC1</text>
+      <line x1="275" y1="357" x2="300" y2="357" stroke="#8d6e63" stroke-width="3"/>
+      <rect x="300" y="348" width="44" height="18" rx="4" fill="#8d6e63"/><text x="322" y="361" text-anchor="middle" class="tag">CC2</text>
+      <g class="badge" text-anchor="middle">
+        <circle cx="360" cy="335" r="10" fill="#fff" stroke="#8d6e63" stroke-width="2"/><text x="360" y="339" font-size="11">23</text>
+        <circle cx="360" cy="357" r="10" fill="#fff" stroke="#8d6e63" stroke-width="2"/><text x="360" y="361" font-size="11">24</text>
+      </g>
+    </g>
     <!-- ESP32 5V и GND на шины -->
     <line x1="275" y1="430" x2="300" y2="430" stroke="var(--v5)" stroke-width="3.5"/>
     <rect x="300" y="420" width="52" height="21" rx="4" fill="var(--v5)"/><text x="326" y="435" text-anchor="middle" class="tag">+5V</text>
@@ -201,20 +216,27 @@
 
 
     <!-- Гнездо USB-C готового устройства -->
-    <rect x="860" y="628" width="150" height="112" rx="10" fill="#e6f4ea" stroke="#188038" stroke-width="2" stroke-dasharray="6 4"/>
-    <text x="935" y="652" text-anchor="middle" class="title">Гнездо USB-C</text>
-    <text x="935" y="669" text-anchor="middle" class="small">в корпусе, от блока 2 А</text>
-    <g class="pin"><text x="996" y="697" text-anchor="end">V</text><text x="996" y="727" text-anchor="end">G</text></g>
-    <g fill="#5f6368"><circle cx="1010" cy="692" r="5"/><circle cx="1010" cy="722" r="5"/></g>
-    <line x1="1015" y1="692" x2="1036" y2="692" stroke="var(--v5)" stroke-width="3.5"/>
-    <rect x="1036" y="682" width="52" height="21" rx="4" fill="var(--v5)"/><text x="1062" y="697" text-anchor="middle" class="tag">+5V</text>
-    <line x1="1015" y1="722" x2="1036" y2="722" stroke="var(--gnd)" stroke-width="3.5"/>
-    <rect x="1036" y="712" width="52" height="21" rx="4" fill="var(--gnd)"/><text x="1062" y="727" text-anchor="middle" class="tag">GND</text>
+    <rect x="860" y="620" width="150" height="160" rx="10" fill="#e6f4ea" stroke="#188038" stroke-width="2" stroke-dasharray="6 4"/>
+    <text x="935" y="644" text-anchor="middle" class="title">Гнездо USB-C</text>
+    <text x="935" y="661" text-anchor="middle" class="small">в корпусе, от блока</text>
+    <g class="pin"><text x="996" y="693" text-anchor="end">V</text><text x="996" y="717" text-anchor="end">G</text>
+      <text x="996" y="741" text-anchor="end">CC1</text><text x="996" y="765" text-anchor="end">CC2</text></g>
+    <g fill="#5f6368"><circle cx="1010" cy="688" r="5"/><circle cx="1010" cy="712" r="5"/><circle cx="1010" cy="736" r="5"/><circle cx="1010" cy="760" r="5"/></g>
+    <line x1="1015" y1="688" x2="1036" y2="688" stroke="var(--v5)" stroke-width="3.5"/>
+    <rect x="1036" y="678" width="52" height="21" rx="4" fill="var(--v5)"/><text x="1062" y="693" text-anchor="middle" class="tag">+5V</text>
+    <line x1="1015" y1="712" x2="1036" y2="712" stroke="var(--gnd)" stroke-width="3.5"/>
+    <rect x="1036" y="702" width="52" height="21" rx="4" fill="var(--gnd)"/><text x="1062" y="717" text-anchor="middle" class="tag">GND</text>
+    <line x1="1015" y1="736" x2="1036" y2="736" stroke="#8d6e63" stroke-width="3"/>
+    <rect x="1036" y="727" width="52" height="18" rx="4" fill="#8d6e63"/><text x="1062" y="740" text-anchor="middle" class="tag">CC1</text>
+    <line x1="1015" y1="760" x2="1036" y2="760" stroke="#8d6e63" stroke-width="3"/>
+    <rect x="1036" y="751" width="52" height="18" rx="4" fill="#8d6e63"/><text x="1062" y="764" text-anchor="middle" class="tag">CC2</text>
     <g class="badge" text-anchor="middle">
-      <circle cx="1106" cy="692" r="12" fill="#fff" stroke="var(--v5)" stroke-width="2"/><text x="1106" y="696">19</text>
-      <circle cx="1106" cy="722" r="12" fill="#fff" stroke="var(--gnd)" stroke-width="2"/><text x="1106" y="726">20</text>
+      <circle cx="1106" cy="688" r="12" fill="#fff" stroke="var(--v5)" stroke-width="2"/><text x="1106" y="692">19</text>
+      <circle cx="1106" cy="712" r="12" fill="#fff" stroke="var(--gnd)" stroke-width="2"/><text x="1106" y="716">20</text>
+      <circle cx="1106" cy="736" r="11" fill="#fff" stroke="#8d6e63" stroke-width="2"/><text x="1106" y="740" font-size="11">23</text>
+      <circle cx="1106" cy="760" r="11" fill="#fff" stroke="#8d6e63" stroke-width="2"/><text x="1106" y="764" font-size="11">24</text>
     </g>
-    <text x="935" y="760" text-anchor="middle" class="small">на стенде не нужно</text>
+    <text x="935" y="798" text-anchor="middle" class="small">D+ и D− не подключать</text>
     <!-- Легенда -->
     <rect x="830" y="410" width="330" height="190" rx="10" fill="#fff" stroke="#dadce0"/>
     <text x="850" y="440" class="title">Как читать метки</text>
@@ -307,9 +329,11 @@
       <tr><td class="c"><input type="checkbox"></td><td class="n">18</td><td><span class="dot" style="background:var(--gnd)"></span>конденсатор, нога со стороны полоски</td><td>шина −</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">21</td><td><span class="dot" style="background:var(--v5)"></span>керамика 0.1 мкФ (104), одна нога</td><td>микросхема, вывод 14</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">22</td><td><span class="dot" style="background:var(--gnd)"></span>керамика 0.1 мкФ (104), другая нога</td><td>микросхема, вывод 7</td></tr>
-      <tr class="group"><td colspan="4">Готовое устройство — питание от блока 2 А (на стенде не нужно)</td></tr>
+      <tr class="group"><td colspan="4">Готовое устройство — питание от блока через гнездо USB-C</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">19</td><td><span class="dot" style="background:var(--v5)"></span>гнездо USB-C, площадка V</td><td>шина +</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">20</td><td><span class="dot" style="background:var(--gnd)"></span>гнездо USB-C, площадка G</td><td>шина −</td></tr>
+      <tr><td class="c"><input type="checkbox"></td><td class="n">23</td><td><span class="dot" style="background:#8d6e63"></span>гнездо USB-C, площадка CC1</td><td>ESP32 GPIO34 (прошивка узнаёт мощность зарядника)</td></tr>
+      <tr><td class="c"><input type="checkbox"></td><td class="n">24</td><td><span class="dot" style="background:#8d6e63"></span>гнездо USB-C, площадка CC2</td><td>ESP32 GPIO35</td></tr>
       <tr class="group"><td colspan="4">Можно не подключать — заработает и так</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">—</td><td>микросхема, выводы 4, 10, 13</td><td>шина +</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">—</td><td>микросхема, выводы 5, 9, 12</td><td>шина −</td></tr>
