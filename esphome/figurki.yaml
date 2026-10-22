@@ -6,21 +6,26 @@
 # Ключ шифрования — !secret api_key из secrets.yaml (приватный репозиторий
 # rudnik275/nfc-figurines-private, сюда кладётся симлинком).
 #
-# Питание: подставка читает с гнезда USB-C, сколько готов отдать зарядник (линии CC
-# на GPIO34/35), и держит ток кольца в этом бюджете — ограничитель в ring_engine.h.
-# От USB компьютера через разъём ESP32 гнездо пустое — кольцо автоматически тусклое.
+# Питание: зарядник USB-C от 2 А через гнездо в корпусе. Ограничитель в ring_engine.h
+# держит оценку тока кольца в бюджете под зарядник charger_ma: на 2 А белый горит на ~94 %,
+# цвета — на 100 %. Прошивать через USB компьютера можно, но метки на подставку в это
+# время не класть: ограничитель рассчитан на зарядник, а не на порт компьютера.
 #
 # Сброс к заводским (Wi-Fi забыт, снова «Figurki Setup»): 5 раз подряд включить
 # питание, каждый раз не дольше 10 с, или кнопка «Сброс к заводским» в HA.
 # Сменил Wi-Fi — сбрасывать не обязательно: не найдя старую сеть, подставка через
 # минуту сама поднимает «Figurki Setup».
 
+substitutions:
+  # На какой зарядник рассчитан бюджет тока кольца, мА.
+  charger_ma: "2000"
+
 esphome:
   name: figurki
   friendly_name: Статуэтки
   project:
     name: rudnik275.nfc-figurines
-    version: "0.3"
+    version: "0.4"
   includes:
     - figurki.h
     - ring_engine.h
@@ -77,10 +82,6 @@ spi:
   mosi_pin: GPIO23
 
 globals:
-  # Сколько мА можно отдать кольцу; пока зарядник не определён — минимум.
-  - id: ring_budget
-    type: float
-    initial_value: '150'
   # Что видит ридер прямо сейчас, без сглаживания: для анимации кольца.
   - id: raw_present
     type: bool
@@ -96,60 +97,10 @@ globals:
     type: std::string
     initial_value: '""'
 
-sensor:
-  # Напряжение на линиях CC гнезда USB-C (резисторы 5.1 кОм на земле).
-  - platform: adc
-    id: cc1
-    pin: GPIO34
-    attenuation: 12db
-    update_interval: 250ms
-    internal: true
-    filters:
-      - median:
-          window_size: 5
-          send_every: 1
-  - platform: adc
-    id: cc2
-    pin: GPIO35
-    attenuation: 12db
-    update_interval: 250ms
-    internal: true
-    filters:
-      - median:
-          window_size: 5
-          send_every: 1
-
-text_sensor:
-  - platform: template
-    id: power_source
-    name: "Блок питания"
-    entity_category: diagnostic
-
 button:
   - platform: factory_reset
     name: "Сброс к заводским"
     entity_category: config
-
-interval:
-  # Зарядник определяется по трём одинаковым замерам подряд — помехи не дёргают бюджет.
-  - interval: 1s
-    then:
-      - lambda: |-
-          static int last = -1, candidate = -1, same = 0;
-          int ma = usb_c_source_ma(id(cc1).state, id(cc2).state);
-          same = (ma == candidate) ? same + 1 : 0;
-          candidate = ma;
-          if (same >= 2 && ma != last) {
-            last = ma;
-            id(ring_budget) = ring_budget_ma(ma);
-            const char *txt = ma == 3000 ? "USB-C 3 А"
-                            : ma == 1500 ? "USB-C 1.5 А — белый приглушён"
-                            : ma == 500  ? "USB 0.5 А — кольцо приглушено"
-                                         : "не определён — кольцо приглушено";
-            id(power_source).publish_state(txt);
-            ESP_LOGI("power", "Блок питания: %s, бюджет кольца %.0f мА (CC1 %.2f В, CC2 %.2f В)",
-                     txt, id(ring_budget), id(cc1).state, id(cc2).state);
-          }
 
 script:
   - id: confirm_removed
@@ -233,6 +184,6 @@ light:
             RingRgb px[RingEngine::kPixels];
             for (int i = 0; i < n; i++) px[i] = e.pixel(i);
             // Ток кольца — не больше, чем позволяет зарядник.
-            limit_power(px, n, id(ring_budget));
+            limit_power(px, n, ring_budget_ma(${charger_ma}));
             for (int i = 0; i < n; i++)
               it[i] = Color(uint8_t(px[i].r * 255), uint8_t(px[i].g * 255), uint8_t(px[i].b * 255));

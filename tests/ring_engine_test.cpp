@@ -227,40 +227,20 @@ int main() {
   }
 
 
-  std::printf("8. Зарядник по линии CC\n");
-  {
-    CHECK(usb_c_source_ma(1.6f, 0.0f) == 3000, "3 А на CC1");
-    CHECK(usb_c_source_ma(0.0f, 1.6f) == 3000, "3 А на CC2 (кабель перевёрнут)");
-    CHECK(usb_c_source_ma(0.9f, 0.02f) == 1500, "1.5 А");
-    CHECK(usb_c_source_ma(0.42f, 0.0f) == 500, "кабель USB-A → C — по умолчанию");
-    CHECK(usb_c_source_ma(0.0f, 0.0f) == 0, "гнездо пустое — неизвестно");
-    CHECK(usb_c_source_ma(1.1f, 1.3f) == 0, "обе линии «висят» (не подпаяны) — неизвестно");
-    CHECK(usb_c_source_ma(3.1f, 0.0f) == 0, "напряжение вне стандарта — неизвестно");
-    CHECK(ring_budget_ma(3000) > 2000, "от 3 А кольцу хватает на полный белый (1.44 А)");
-    CHECK(ring_budget_ma(1500) > 700 && ring_budget_ma(1500) < 800, "от 1.5 А — около 0.78 А");
-    CHECK(ring_budget_ma(500) == 150 && ring_budget_ma(0) == 150, "слабый или неизвестный — минимум");
-  }
-
-  std::printf("9. Ограничитель тока\n");
+  std::printf("8. Ограничитель тока под зарядник 2 А\n");
   {
     RingRgb white[24], red[24];
     for (auto &p : white) p = {1, 1, 1};
     for (auto &p : red) p = {1, 0, 0};
-    std::printf("  полный белый: %.0f мА, полный красный: %.0f мА\n", ring_current_ma(white, 24), ring_current_ma(red, 24));
-    RingRgb w1[24], w2[24], r1[24];
-    std::copy(white, white + 24, w1);
-    std::copy(white, white + 24, w2);
-    std::copy(red, red + 24, r1);
-    CHECK(limit_power(w1, 24, ring_budget_ma(3000)) == 1.0f, "от 3 А белый не приглушается");
-    float k = limit_power(w2, 24, ring_budget_ma(1500));
-    float after = ring_current_ma(w2, 24);
-    std::printf("  белый от 1.5 А: яркость ×%.2f, ток %.0f мА (бюджет %.0f)\n", k, after, ring_budget_ma(1500));
-    CHECK(k < 1.0f && std::fabs(after - ring_budget_ma(1500)) < 2.0f, "от 1.5 А белый приглушён ровно до бюджета");
-    CHECK(limit_power(r1, 24, ring_budget_ma(1500)) == 1.0f, "насыщенный цвет от 1.5 А — на полную");
-    RingRgb w3[24];
-    std::copy(white, white + 24, w3);
-    limit_power(w3, 24, ring_budget_ma(0));
-    CHECK(ring_current_ma(w3, 24) <= 151.0f && w3[0].r > 0.3f, "без данных о заряднике — тускло, но видно");
+    float budget = ring_budget_ma(2000);
+    std::printf("  бюджет %.0f мА; полный белый %.0f мА, полный красный %.0f мА\n", budget,
+                ring_current_ma(white, 24), ring_current_ma(red, 24));
+    float k = limit_power(white, 24, budget);
+    std::printf("  белый: яркость ×%.2f, ток %.0f мА\n", k, ring_current_ma(white, 24));
+    CHECK(std::fabs(ring_current_ma(white, 24) - budget) < 2.0f, "белый приглушён ровно до бюджета");
+    CHECK(k > 0.9f, "белый от зарядника 2 А — не тусклее 90 %");
+    CHECK(limit_power(red, 24, budget) == 1.0f, "насыщенный цвет — на полную");
+    CHECK(ring_budget_ma(2000) + 500 <= 2000 * 0.86f, "вместе с ESP32 и ридером — в пределах 2 А с запасом");
   }
 
   std::printf(failures ? "\nПРОВАЛЕНО: %d\n" : "\nВсе тесты прошли\n", failures);

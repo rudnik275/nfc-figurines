@@ -413,177 +413,6 @@
       <hideShortLeads>false</hideShortLeads>
       <style>SOLID</style>
     </diylc.connectivity.Jumper>
-    <diylc.connectivity.Jumper>
-      <name>J21</name>
-      <alpha>127</alpha>
-      <points>
-        <point x="2.1" y="1.2"/>
-        <point x="2.1" y="1.3"/>
-        <point x="2.1" y="1.25"/>
-      </points>
-      <bodyColor hex="ffffff"/>
-      <borderColor hex="000000"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="9aa0a6"/>
-      <display>NONE</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <hideShortLeads>false</hideShortLeads>
-      <style>SOLID</style>
-    </diylc.connectivity.Jumper>
-    <diylc.connectivity.Jumper>
-      <name>J22</name>
-      <alpha>127</alpha>
-      <points>
-        <point x="2.5" y="1.3"/>
-        <point x="2.6" y="1.3"/>
-        <point x="2.55" y="1.3"/>
-      </points>
-      <bodyColor hex="ffffff"/>
-      <borderColor hex="000000"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="9aa0a6"/>
-      <display>NONE</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <hideShortLeads>false</hideShortLeads>
-      <style>SOLID</style>
-    </diylc.connectivity.Jumper>
-    <diylc.connectivity.Jumper>
-      <name>J23</name>
-      <alpha>127</alpha>
-      <points>
-        <point x="2.6" y="1.3"/>
-        <point x="2.6" y="1.4"/>
-        <point x="2.6" y="1.35"/>
-      </points>
-      <bodyColor hex="ffffff"/>
-      <borderColor hex="000000"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="9aa0a6"/>
-      <display>NONE</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <hideShortLeads>false</hideShortLeads>
-      <style>SOLID</style>
-    </diylc.connectivity.Jumper>
-    <diylc.connectivity.Jumper>
-      <name>J24</name>
-      <alpha>127</alpha>
-      <points>
-        <point x="2.6" y="1.2"/>
-        <point x="2.6" y="1.3"/>
-        <point x="2.6" y="1.25"/>
-      </points>
-      <bodyColor hex="ffffff"/>
-      <borderColor hex="000000"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="9aa0a6"/>
-      <display>NONE</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <hideShortLeads>false</hideShortLeads>
-      <style>SOLID</style>
-    </diylc.connectivity.Jumper>
-    <diylc.connectivity.Jumper>
-      <name>J25</name>
-      <alpha>127</alpha>
-      <points>
-        <point x="2.7" y="1.4"/>
-        <point x="2.7" y="1.9"/>
-        <point x="2.7" y="1.65"/>
-      </points>
-      <bodyColor hex="ffffff"/>
-      <borderColor hex="000000"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="9aa0a6"/>
-      <display>NONE</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <hideShortLeads>false</hideShortLeads>
-      <style>SOLID</style>
-    </diylc.connectivity.Jumper>
-    <diylc.connectivity.Jumper>
-      <name>J26</name>
-      <alpha>127</alpha>
-      <points>
-        <point x="2.1" y="1.8"/>
-        <point x="2.1" y="1.7"/>
-        <point x="2.1" y="1.75"/>
-      </points>
-      <bodyColor hex="ffffff"/>
-      <borderColor hex="000000"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="9aa0a6"/>
-      <display>NONE</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <hideShortLeads>false</hideShortLeads>
-      <style>SOLID</style>
-    </diylc.connectivity.Jumper>
-    <diylc.connectivity.Jumper>
-      <name>J27</name>
-      <alpha>127</alpha>
-      <points>
-        <point x="2.5" y="1.7"/>
-        <point x="2.6" y="1.7"/>
-        <point x="2.55" y="1.7"/>
-      </points>
-      <bodyColor hex="ffffff"/>
-      <borderColor hex="000000"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="9aa0a6"/>
-      <display>NONE</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <hideShortLeads>false</hideShortLeads>
-      <style>SOLID</style>
-    </diylc.connectivity.Jumper>
-    <diylc.connectivity.Jumper>
-      <name>J28</name>
-      <alpha>127</alpha>
-      <points>
-        <point x="2.6" y="1.7"/>
-        <point x="2.6" y="1.6"/>
-        <point x="2.6" y="1.65"/>
-      </points>
-      <bodyColor hex="ffffff"/>
-      <borderColor hex="000000"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="9aa0a6"/>
-      <display>NONE</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <hideShortLeads>false</hideShortLeads>
-      <style>SOLID</style>
-    </diylc.connectivity.Jumper>
-    <diylc.connectivity.Jumper>
-      <name>J29</name>
-      <alpha>127</alpha>
-      <points>
-        <point x="2.6" y="1.8"/>
-        <point x="2.6" y="1.7"/>
-        <point x="2.6" y="1.75"/>
-      </points>
-      <bodyColor hex="ffffff"/>
-      <borderColor hex="000000"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="9aa0a6"/>
-      <display>NONE</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <hideShortLeads>false</hideShortLeads>
-      <style>SOLID</style>
-    </diylc.connectivity.Jumper>
     <diylc.semiconductors.DIL__IC>
       <name>IC1</name>
       <alpha>127</alpha>
@@ -669,96 +498,6 @@
         <point x="0.8" y="1.1"/>
         <point x="0.8" y="1.2"/>
         <point x="0.8" y="1.15"/>
-      </points>
-      <bodyColor hex="f28c28"/>
-      <borderColor hex="a85f1a"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="cccccc"/>
-      <display>NAME</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <pinSpacing value="0.1" unit="in"/>
-      <voltage>_63V</voltage>
-    </diylc.passive.RadialCeramicDiskCapacitor>
-    <diylc.passive.Resistor>
-      <name>R2</name>
-      <alpha>127</alpha>
-      <length value="6.3" unit="mm"/>
-      <width value="2.3" unit="mm"/>
-      <points>
-        <point x="2.1" y="1.3"/>
-        <point x="2.5" y="1.3"/>
-        <point x="2.3" y="1.24"/>
-      </points>
-      <bodyColor hex="82cffd"/>
-      <borderColor hex="5b90b1"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="cccccc"/>
-      <display>BOTH</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Horizontal</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <value value="100.0" unit="K"/>
-      <power>QUARTER</power>
-      <powerNew value="0.25" unit="W"/>
-      <colorCode>_4_BAND</colorCode>
-      <shape>Tubular</shape>
-    </diylc.passive.Resistor>
-    <diylc.passive.RadialCeramicDiskCapacitor>
-      <name>C3</name>
-      <alpha>127</alpha>
-      <length value="0.2" unit="in"/>
-      <width value="0.1" unit="in"/>
-      <points>
-        <point x="2.6" y="1.4"/>
-        <point x="2.7" y="1.4"/>
-        <point x="2.65" y="1.4"/>
-      </points>
-      <bodyColor hex="f28c28"/>
-      <borderColor hex="a85f1a"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="cccccc"/>
-      <display>NAME</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <pinSpacing value="0.1" unit="in"/>
-      <voltage>_63V</voltage>
-    </diylc.passive.RadialCeramicDiskCapacitor>
-    <diylc.passive.Resistor>
-      <name>R3</name>
-      <alpha>127</alpha>
-      <length value="6.3" unit="mm"/>
-      <width value="2.3" unit="mm"/>
-      <points>
-        <point x="2.1" y="1.7"/>
-        <point x="2.5" y="1.7"/>
-        <point x="2.3" y="1.64"/>
-      </points>
-      <bodyColor hex="82cffd"/>
-      <borderColor hex="5b90b1"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="cccccc"/>
-      <display>BOTH</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Horizontal</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <value value="100.0" unit="K"/>
-      <power>QUARTER</power>
-      <powerNew value="0.25" unit="W"/>
-      <colorCode>_4_BAND</colorCode>
-      <shape>Tubular</shape>
-    </diylc.passive.Resistor>
-    <diylc.passive.RadialCeramicDiskCapacitor>
-      <name>C4</name>
-      <alpha>127</alpha>
-      <length value="0.2" unit="in"/>
-      <width value="0.1" unit="in"/>
-      <points>
-        <point x="2.6" y="1.6"/>
-        <point x="2.7" y="1.6"/>
-        <point x="2.65" y="1.6"/>
       </points>
       <bodyColor hex="f28c28"/>
       <borderColor hex="a85f1a"/>
@@ -884,7 +623,7 @@
       <alpha>127</alpha>
       <controlPoints2>
         <point x="2.8" y="1.0"/>
-        <point x="2.8" y="0.55"/>
+        <point x="2.8" y="0.35"/>
       </controlPoints2>
       <color hex="d93025"/>
       <pointCount>TWO</pointCount>
@@ -897,7 +636,7 @@
     </diylc.connectivity.HookupWire>
     <diylc.misc.Label>
       <name>L5</name>
-      <point x="2.8" y="0.47"/>
+      <point x="2.8" y="0.27"/>
       <text>USB-C V</text>
       <font name="Dialog.plain" size="9" style="0"/>
       <color hex="000000"/>
@@ -911,7 +650,7 @@
       <alpha>127</alpha>
       <controlPoints2>
         <point x="2.8" y="1.9"/>
-        <point x="2.8" y="2.15"/>
+        <point x="2.8" y="2.35"/>
       </controlPoints2>
       <color hex="202124"/>
       <pointCount>TWO</pointCount>
@@ -924,7 +663,7 @@
     </diylc.connectivity.HookupWire>
     <diylc.misc.Label>
       <name>L6</name>
-      <point x="2.8" y="2.23"/>
+      <point x="2.8" y="2.43"/>
       <text>USB-C G</text>
       <font name="Dialog.plain" size="9" style="0"/>
       <color hex="000000"/>
@@ -938,7 +677,7 @@
       <alpha>127</alpha>
       <controlPoints2>
         <point x="2.4" y="1.0"/>
-        <point x="2.4" y="0.35"/>
+        <point x="2.4" y="0.55"/>
       </controlPoints2>
       <color hex="d93025"/>
       <pointCount>TWO</pointCount>
@@ -951,7 +690,7 @@
     </diylc.connectivity.HookupWire>
     <diylc.misc.Label>
       <name>L7</name>
-      <point x="2.4" y="0.27"/>
+      <point x="2.4" y="0.47"/>
       <text>ESP32 5V</text>
       <font name="Dialog.plain" size="9" style="0"/>
       <color hex="000000"/>
@@ -965,7 +704,7 @@
       <alpha>127</alpha>
       <controlPoints2>
         <point x="2.4" y="1.9"/>
-        <point x="2.4" y="2.35"/>
+        <point x="2.4" y="2.15"/>
       </controlPoints2>
       <color hex="202124"/>
       <pointCount>TWO</pointCount>
@@ -978,116 +717,8 @@
     </diylc.connectivity.HookupWire>
     <diylc.misc.Label>
       <name>L8</name>
-      <point x="2.4" y="2.43"/>
+      <point x="2.4" y="2.23"/>
       <text>ESP32 GND</text>
-      <font name="Dialog.plain" size="9" style="0"/>
-      <color hex="000000"/>
-      <center>true</center>
-      <horizontalAlignment>CENTER</horizontalAlignment>
-      <verticalAlignment>CENTER</verticalAlignment>
-      <orientation>DEFAULT</orientation>
-    </diylc.misc.Label>
-    <diylc.connectivity.HookupWire>
-      <name>W9</name>
-      <alpha>127</alpha>
-      <controlPoints2>
-        <point x="2.1" y="1.2"/>
-        <point x="2.1" y="0.55"/>
-      </controlPoints2>
-      <color hex="8d6e63"/>
-      <pointCount>TWO</pointCount>
-      <style>DASHED</style>
-      <smooth>true</smooth>
-      <lastUpdatePointIndex>-1</lastUpdatePointIndex>
-      <gauge>_26</gauge>
-      <striped>false</striped>
-      <stripeColor hex="ffff00"/>
-    </diylc.connectivity.HookupWire>
-    <diylc.misc.Label>
-      <name>L9</name>
-      <point x="2.1" y="0.47"/>
-      <text>USB-C CC1</text>
-      <font name="Dialog.plain" size="9" style="0"/>
-      <color hex="000000"/>
-      <center>true</center>
-      <horizontalAlignment>CENTER</horizontalAlignment>
-      <verticalAlignment>CENTER</verticalAlignment>
-      <orientation>DEFAULT</orientation>
-    </diylc.misc.Label>
-    <diylc.connectivity.HookupWire>
-      <name>W10</name>
-      <alpha>127</alpha>
-      <controlPoints2>
-        <point x="2.6" y="1.2"/>
-        <point x="2.6" y="0.75"/>
-      </controlPoints2>
-      <color hex="8d6e63"/>
-      <pointCount>TWO</pointCount>
-      <style>DASHED</style>
-      <smooth>true</smooth>
-      <lastUpdatePointIndex>-1</lastUpdatePointIndex>
-      <gauge>_26</gauge>
-      <striped>false</striped>
-      <stripeColor hex="ffff00"/>
-    </diylc.connectivity.HookupWire>
-    <diylc.misc.Label>
-      <name>L10</name>
-      <point x="2.6" y="0.67"/>
-      <text>ESP32 GPIO34</text>
-      <font name="Dialog.plain" size="9" style="0"/>
-      <color hex="000000"/>
-      <center>true</center>
-      <horizontalAlignment>CENTER</horizontalAlignment>
-      <verticalAlignment>CENTER</verticalAlignment>
-      <orientation>DEFAULT</orientation>
-    </diylc.misc.Label>
-    <diylc.connectivity.HookupWire>
-      <name>W11</name>
-      <alpha>127</alpha>
-      <controlPoints2>
-        <point x="2.1" y="1.8"/>
-        <point x="2.1" y="2.15"/>
-      </controlPoints2>
-      <color hex="8d6e63"/>
-      <pointCount>TWO</pointCount>
-      <style>DASHED</style>
-      <smooth>true</smooth>
-      <lastUpdatePointIndex>-1</lastUpdatePointIndex>
-      <gauge>_26</gauge>
-      <striped>false</striped>
-      <stripeColor hex="ffff00"/>
-    </diylc.connectivity.HookupWire>
-    <diylc.misc.Label>
-      <name>L11</name>
-      <point x="2.1" y="2.23"/>
-      <text>USB-C CC2</text>
-      <font name="Dialog.plain" size="9" style="0"/>
-      <color hex="000000"/>
-      <center>true</center>
-      <horizontalAlignment>CENTER</horizontalAlignment>
-      <verticalAlignment>CENTER</verticalAlignment>
-      <orientation>DEFAULT</orientation>
-    </diylc.misc.Label>
-    <diylc.connectivity.HookupWire>
-      <name>W12</name>
-      <alpha>127</alpha>
-      <controlPoints2>
-        <point x="2.6" y="1.8"/>
-        <point x="2.6" y="2.55"/>
-      </controlPoints2>
-      <color hex="8d6e63"/>
-      <pointCount>TWO</pointCount>
-      <style>DASHED</style>
-      <smooth>true</smooth>
-      <lastUpdatePointIndex>-1</lastUpdatePointIndex>
-      <gauge>_26</gauge>
-      <striped>false</striped>
-      <stripeColor hex="ffff00"/>
-    </diylc.connectivity.HookupWire>
-    <diylc.misc.Label>
-      <name>L12</name>
-      <point x="2.6" y="2.63"/>
-      <text>ESP32 GPIO35</text>
       <font name="Dialog.plain" size="9" style="0"/>
       <color hex="000000"/>
       <center>true</center>
