@@ -149,6 +149,12 @@
     <rect x="478" y="628" width="52" height="21" rx="4" fill="var(--gnd)"/><text x="504" y="643" text-anchor="middle" class="tag">GND</text>
     <g class="badge" text-anchor="middle"><circle cx="458" cy="638" r="12" fill="#fff" stroke="var(--gnd)" stroke-width="2"/><text x="458" y="642">11</text></g>
 
+
+    <!-- Керамика 0.1 мкФ у микросхемы -->
+    <text x="692" y="556" class="pin" font-weight="700">+ керамика 104</text>
+    <text x="692" y="575" class="small">между выв. 14 и 7,</text>
+    <text x="692" y="592" class="small">вплотную к ним;</text>
+    <text x="692" y="609" class="small">провода 21–22</text>
     <!-- вывод 3 → резистор → Din -->
     <path d="M546 526 H400 V545" stroke="var(--data)" stroke-width="3.5" fill="none"/>
     <path d="M400 545 l-8 5 l16 8 l-16 8 l16 8 l-16 8 l16 8 l-8 5" stroke="#202124" stroke-width="2.5" fill="none"/>
@@ -299,6 +305,8 @@
       <tr><td class="c"><input type="checkbox"></td><td class="n">16</td><td><span class="dot" style="background:var(--gnd)"></span>лента GND</td><td>шина −</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">17</td><td><span class="dot" style="background:var(--v5)"></span>конденсатор, длинная нога</td><td>шина +</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">18</td><td><span class="dot" style="background:var(--gnd)"></span>конденсатор, нога со стороны полоски</td><td>шина −</td></tr>
+      <tr><td class="c"><input type="checkbox"></td><td class="n">21</td><td><span class="dot" style="background:var(--v5)"></span>керамика 0.1 мкФ (104), одна нога</td><td>микросхема, вывод 14</td></tr>
+      <tr><td class="c"><input type="checkbox"></td><td class="n">22</td><td><span class="dot" style="background:var(--gnd)"></span>керамика 0.1 мкФ (104), другая нога</td><td>микросхема, вывод 7</td></tr>
       <tr class="group"><td colspan="4">Готовое устройство — питание от блока 2 А (на стенде не нужно)</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">19</td><td><span class="dot" style="background:var(--v5)"></span>гнездо USB-C, площадка V</td><td>шина +</td></tr>
       <tr><td class="c"><input type="checkbox"></td><td class="n">20</td><td><span class="dot" style="background:var(--gnd)"></span>гнездо USB-C, площадка G</td><td>шина −</td></tr>
