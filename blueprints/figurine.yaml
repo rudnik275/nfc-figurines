@@ -3,31 +3,22 @@ blueprint:
   description: >-
     Поставили статуэтку на подставку — кольцо загорается её цветом и выполняются
     действия. Сняли — выполняются действия «когда сняли».
-    Одна автоматизация на одну статуэтку.
+    Одна автоматизация на одну статуэтку. Новые метки появляются сами: поставь метку
+    на подставку, и она появится в «Настройки → Метки» и в списке ниже.
   domain: automation
   source_url: https://github.com/rudnik275/nfc-figurines/blob/main/blueprints/figurine.yaml
   homeassistant:
     min_version: 2024.10.0
   input:
     figurine:
-      name: Статуэтка
+      name: Метка статуэтки
       description: >-
-        Номер подписан на основании. Новую метку можно вписать по UID из
-        «Настройки → Метки» — она появится там, как только её поставят на подставку.
+        Новая метка появится в этом списке, как только её впервые поставят на подставку.
+        Дать ей понятное имя можно в «Настройки → Метки».
       selector:
-        select:
-          custom_value: true
-          options:
-            - { label: Статуэтка 1, value: figurka-1 }
-            - { label: Статуэтка 2, value: figurka-2 }
-            - { label: Статуэтка 3, value: figurka-3 }
-            - { label: Статуэтка 4, value: figurka-4 }
-            - { label: Статуэтка 5, value: figurka-5 }
-            - { label: Статуэтка 6, value: figurka-6 }
-            - { label: Статуэтка 7, value: figurka-7 }
-            - { label: Статуэтка 8, value: figurka-8 }
-            - { label: Статуэтка 9, value: figurka-9 }
-            - { label: Статуэтка 10, value: figurka-10 }
+        entity:
+          filter:
+            - domain: tag
     color:
       name: Цвет кольца
       default: [255, 140, 0]
@@ -58,18 +49,28 @@ mode: restart
 max_exceeded: silent
 
 variables:
+  figurine: !input figurine
+  tag_id: "{{ state_attr(figurine, 'tag_id') }}"
   color: !input color
   hold: !input hold
 
 triggers:
-  - trigger: tag
-    tag_id: !input figurine
+  # Сущность метки меняет состояние (время сканирования) при каждой постановке.
+  - trigger: state
+    entity_id: !input figurine
+    not_from:
+      - unknown
+      - unavailable
     id: placed
   - trigger: event
     event_type: esphome.figurine_removed
-    event_data:
-      tag_id: !input figurine
     id: removed
+
+# «Сняли» приходит для любой метки — чужие отсекаются до запуска, чтобы mode: restart
+# не обрывал действия этой статуэтки.
+conditions:
+  - condition: template
+    value_template: "{{ trigger.id == 'placed' or trigger.event.data.tag_id == tag_id }}"
 
 actions:
   - choose:

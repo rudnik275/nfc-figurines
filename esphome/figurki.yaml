@@ -25,9 +25,8 @@ esphome:
   friendly_name: Статуэтки
   project:
     name: rudnik275.nfc-figurines
-    version: "0.5"
+    version: "0.6"
   includes:
-    - figurki.h
     - ring_engine.h
   on_boot:
     priority: -100
@@ -110,11 +109,6 @@ globals:
   - id: present_tag
     type: std::string
     initial_value: '""'
-  # Номер статуэтки для HA (figurka-N или UID). Поля событий читают его отсюда: лямбды
-  # в полях data ESPHome кладёт в main.cpp раньше includes, figurine_id() там не виден.
-  - id: present_figurine
-    type: std::string
-    initial_value: '""'
 
 button:
   - platform: factory_reset
@@ -132,10 +126,8 @@ script:
       - homeassistant.event:
           event: esphome.figurine_removed
           data:
-            tag_id: !lambda 'return id(present_figurine);'
-      - lambda: |-
-          id(present_tag) = "";
-          id(present_figurine) = "";
+            tag_id: !lambda 'return id(present_tag);'
+      - lambda: 'id(present_tag) = "";'
 
 pn532_spi:
   cs_pin: GPIO5
@@ -160,15 +152,15 @@ pn532_spi:
                   - homeassistant.event:
                       event: esphome.figurine_removed
                       data:
-                        tag_id: !lambda 'return id(present_figurine);'
+                        tag_id: !lambda 'return id(present_tag);'
             - lambda: |-
                 id(present_tag) = x;
-                id(present_figurine) = figurine_id(x);
                 ring_engine().new_tag();
             - logger.log:
                 format: "ПОСТАВИЛИ: %s"
                 args: ['x.c_str()']
-            - homeassistant.tag_scanned: !lambda 'return id(present_figurine);'
+            # Метки прошивке не нужны: в HA уходит UID, там метку называют и выбирают в блупринте.
+            - homeassistant.tag_scanned: !lambda 'return x;'
   on_tag_removed:
     then:
       - lambda: 'id(raw_present) = false;'
