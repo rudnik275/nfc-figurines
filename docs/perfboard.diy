@@ -375,44 +375,6 @@
       <hideShortLeads>false</hideShortLeads>
       <style>SOLID</style>
     </diylc.connectivity.Jumper>
-    <diylc.connectivity.Jumper>
-      <name>J19</name>
-      <alpha>127</alpha>
-      <points>
-        <point x="0.8" y="1.0"/>
-        <point x="0.8" y="1.1"/>
-        <point x="0.8" y="1.05"/>
-      </points>
-      <bodyColor hex="ffffff"/>
-      <borderColor hex="000000"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="9aa0a6"/>
-      <display>NONE</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <hideShortLeads>false</hideShortLeads>
-      <style>SOLID</style>
-    </diylc.connectivity.Jumper>
-    <diylc.connectivity.Jumper>
-      <name>J20</name>
-      <alpha>127</alpha>
-      <points>
-        <point x="0.8" y="1.2"/>
-        <point x="0.8" y="1.9"/>
-        <point x="0.8" y="1.55"/>
-      </points>
-      <bodyColor hex="ffffff"/>
-      <borderColor hex="000000"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="9aa0a6"/>
-      <display>NONE</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <hideShortLeads>false</hideShortLeads>
-      <style>SOLID</style>
-    </diylc.connectivity.Jumper>
     <diylc.semiconductors.DIL__IC>
       <name>IC1</name>
       <alpha>127</alpha>
@@ -489,27 +451,6 @@
       <colorCode>_4_BAND</colorCode>
       <shape>Tubular</shape>
     </diylc.passive.Resistor>
-    <diylc.passive.RadialCeramicDiskCapacitor>
-      <name>C2</name>
-      <alpha>127</alpha>
-      <length value="0.2" unit="in"/>
-      <width value="0.1" unit="in"/>
-      <points>
-        <point x="0.8" y="1.1"/>
-        <point x="0.8" y="1.2"/>
-        <point x="0.8" y="1.15"/>
-      </points>
-      <bodyColor hex="f28c28"/>
-      <borderColor hex="a85f1a"/>
-      <labelColor hex="000000"/>
-      <leadColor hex="cccccc"/>
-      <display>NAME</display>
-      <flipStanding>false</flipStanding>
-      <labelOriantation>Directional</labelOriantation>
-      <moveLabel>false</moveLabel>
-      <pinSpacing value="0.1" unit="in"/>
-      <voltage>_63V</voltage>
-    </diylc.passive.RadialCeramicDiskCapacitor>
     <diylc.connectivity.HookupWire>
       <name>W1</name>
       <alpha>127</alpha>
