@@ -238,7 +238,7 @@ def xml_ic():
       <borderColor hex="202124"/>
       <labelColor hex="ffffff"/>
       <indentColor hex="202124"/>
-      <displayNumbers>YES</displayNumbers>
+      <displayNumbers>DIP</displayNumbers>
     </diylc.semiconductors.DIL__IC>
 """
 
