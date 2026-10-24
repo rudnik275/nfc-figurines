@@ -22,6 +22,8 @@ substitutions:
   charger_ma: "2000"
 
 esphome:
+  # Не менять: по имени HA узнаёт подставку, а блупринт вызывает esphome.figurki_show_color —
+  # после обновления у владельца перестали бы работать автоматизации.
   name: figurki
   friendly_name: Статуэтки
   project:
@@ -63,7 +65,9 @@ api:
   # Без этого устройство перезагружается каждые 15 минут, пока его не добавили в HA.
   reboot_timeout: 0s
   actions:
-    # Вызывает блупринт: esphome.figurki_show_color.
+    # Вызывает блупринт: esphome.figurki_show_color. Имя и параметры, как и событие
+    # esphome.figurine_removed с tag_id, — договор с блупринтом: новые параметры добавлять
+    # можно, старые переименовывать и удалять — нет.
     - action: show_color
       variables:
         red: int
@@ -119,6 +123,8 @@ factory_reset:
         args: ['x', 'target']
 
 # Wi-Fi вводится с телефона: точка доступа «Figurki Setup» → страница выбора сети.
+# Сетей (ssid, networks) здесь не задавать: введённый Wi-Fi хранится под постоянным ключом,
+# только пока их нет; с ними ключ зависит от конфига, и после обновления подставка забудет сеть.
 wifi:
   # Включается из on_boot, когда кольцо уже погашено.
   enable_on_boot: false
