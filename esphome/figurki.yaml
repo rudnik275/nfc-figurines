@@ -12,19 +12,27 @@
 # питание, каждый раз не дольше 10 с, или кнопка «Сброс к заводским» в HA.
 # Сменил Wi-Fi — сбрасывать не обязательно: не найдя старую сеть, подставка через
 # минуту сама поднимает «Figurki Setup».
+#
+# Обновляется сама через интернет: раз в час читает манифест на GitHub Pages и ставит
+# версию новее своей, когда подставка 10 минут пустая (см. README, «Обновление прошивки»).
+# Новая прошивка не продержалась минуту — загрузчик возвращает прежнюю.
 
 substitutions:
   # На какой зарядник рассчитан бюджет тока кольца, мА.
   charger_ma: "2000"
 
 esphome:
+  # Не менять: по имени HA узнаёт подставку, а блупринт вызывает esphome.figurki_show_color —
+  # после обновления у владельца перестали бы работать автоматизации.
   name: figurki
   friendly_name: Статуэтки
   project:
     name: rudnik275.nfc-figurines
-    version: "0.7"
+    # Тег релиза — v<version>: по нему CI собирает прошивку для всех подставок.
+    version: "0.8"
   includes:
     - ring_engine.h
+    - firmware_version.h
   on_boot:
     priority: -100
     then:
@@ -57,7 +65,9 @@ api:
   # Без этого устройство перезагружается каждые 15 минут, пока его не добавили в HA.
   reboot_timeout: 0s
   actions:
-    # Вызывает блупринт: esphome.figurki_show_color.
+    # Вызывает блупринт: esphome.figurki_show_color. Имя и параметры, как и событие
+    # esphome.figurine_removed с tag_id, — договор с блупринтом: новые параметры добавлять
+    # можно, старые переименовывать и удалять — нет.
     - action: show_color
       variables:
         red: int
@@ -68,7 +78,41 @@ api:
         - lambda: 'ring_engine().set_color(red, green, blue, hold);'
 
 ota:
+  # По локальной сети: esphome run с компьютера рядом.
   - platform: esphome
+  # Через интернет: прошивку скачивает сама подставка (update ниже).
+  - platform: http_request
+
+# HTTPS с проверкой сертификата. Заголовки GitHub Pages влезают в буфер по умолчанию,
+# GitHub Releases — нет («Out of buffer»), поэтому прошивку раздают Pages.
+http_request:
+
+update:
+  - platform: http_request
+    id: firmware
+    name: "Прошивка"
+    source: https://rudnik275.github.io/nfc-figurines/firmware/figurki.manifest.json
+    update_interval: 1h
+
+interval:
+  # Новая версия ставится сама, когда подставка 10 минут пустая: перезагрузка не
+  # оборвёт сценарий статуэтки и не запустит его заново. Ту же или старую версию
+  # (стенд с dev-сборкой) можно поставить только кнопкой в HA.
+  - interval: 1min
+    then:
+      - if:
+          condition:
+            lambda: |-
+              auto *u = id(firmware);
+              return u->state == update::UPDATE_STATE_AVAILABLE &&
+                     version_newer(u->update_info.latest_version, u->update_info.current_version) &&
+                     id(present_tag).empty() && !id(raw_present) &&
+                     millis() - id(last_activity) > 10 * 60 * 1000;
+          then:
+            - logger.log:
+                format: "Ставлю прошивку %s вместо %s"
+                args: ['id(firmware)->update_info.latest_version.c_str()', 'id(firmware)->update_info.current_version.c_str()']
+            - update.perform: firmware
 
 factory_reset:
   resets_required: 5
@@ -79,6 +123,8 @@ factory_reset:
         args: ['x', 'target']
 
 # Wi-Fi вводится с телефона: точка доступа «Figurki Setup» → страница выбора сети.
+# Сетей (ssid, networks) здесь не задавать: введённый Wi-Fi хранится под постоянным ключом,
+# только пока их нет; с ними ключ зависит от конфига, и после обновления подставка забудет сеть.
 wifi:
   # Включается из on_boot, когда кольцо уже погашено.
   enable_on_boot: false
@@ -106,6 +152,10 @@ globals:
   - id: present_tag
     type: std::string
     initial_value: '""'
+  # Когда ридер последний раз видел метку или потерял её, millis(): для обновления.
+  - id: last_activity
+    type: uint32_t
+    initial_value: '0'
 
 button:
   - platform: factory_reset
@@ -132,7 +182,9 @@ pn532_spi:
   update_interval: 200ms
   on_tag:
     then:
-      - lambda: 'id(raw_present) = true;'
+      - lambda: |-
+          id(raw_present) = true;
+          id(last_activity) = millis();
       - if:
           condition:
             lambda: 'return x == id(present_tag);'
@@ -160,7 +212,9 @@ pn532_spi:
             - homeassistant.tag_scanned: !lambda 'return x;'
   on_tag_removed:
     then:
-      - lambda: 'id(raw_present) = false;'
+      - lambda: |-
+          id(raw_present) = false;
+          id(last_activity) = millis();
       - script.execute: confirm_removed
 
 light:
