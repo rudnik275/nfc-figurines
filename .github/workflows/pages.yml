@@ -1,0 +1,43 @@
+# GitHub Pages: docs/ (страница настройки, наклейки) + прошивка последнего релиза в /firmware/,
+# откуда её скачивают подставки. Запускается при пуше в main и из firmware.yml после релиза.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Сайт
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp -r docs _site
+          if gh release view >/dev/null 2>&1; then
+            gh release download --pattern 'figurki.*' --dir _site/firmware
+          fi
+          ls -R _site
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v5

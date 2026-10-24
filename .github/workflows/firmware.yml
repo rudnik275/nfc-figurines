@@ -1,0 +1,48 @@
+# Тег v<version> → тесты, сборка esphome/figurki.yaml, релиз на GitHub, публикация на Pages.
+# Подставки скачивают прошивку с Pages сами (см. README, «Обновление прошивки»).
+name: Прошивка
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write # релиз
+  actions: write # запуск pages.yml
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Тесты
+        run: for t in tests/*_test.cpp; do g++ -std=c++17 -Wall -I esphome "$t" -o /tmp/t && /tmp/t; done
+
+      - uses: astral-sh/setup-uv@v10
+
+      # Версия ESPHome закреплена: релиз собирается тем же, чем проверен на стенде.
+      - name: Сборка
+        working-directory: esphome
+        run: uvx --python 3.12 esphome==2026.10.0 compile figurki.yaml
+
+      # Описание обновления в HA — сообщение тега (git tag -a v0.9 -m "...") или коммита.
+      - name: Манифест
+        run: |
+          git fetch --force origin "refs/tags/$GITHUB_REF_NAME:refs/tags/$GITHUB_REF_NAME"
+          SUMMARY=$(git tag -l --format='%(contents:subject)' "$GITHUB_REF_NAME")
+          python3 tools/make-manifest.py --tag "$GITHUB_REF_NAME" --bin esphome/.esphome/build/figurki/build/firmware.ota.bin --out dist --release-url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/tag/$GITHUB_REF_NAME" --summary "$SUMMARY"
+          # Для прошивки с нуля по USB (web.esphome.io), если подставку придётся поднимать.
+          cp esphome/.esphome/build/figurki/build/firmware.factory.bin dist/figurki.factory.bin
+          echo "SUMMARY=$SUMMARY" >> "$GITHUB_ENV"
+
+      - name: Релиз
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --title "$GITHUB_REF_NAME" --notes "$SUMMARY"
+
+      # Деплой на Pages разрешён только с main, поэтому отдельным запуском pages.yml.
+      - name: Опубликовать на Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref main
